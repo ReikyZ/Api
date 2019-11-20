@@ -2,19 +2,13 @@ var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', function (req, res, next) {
+    res.render('index', {title: 'Express'});
 });
-
-/* GET live page. */
-router.get('/live', function (req,res, next) {
-    res.render('index', { title: 'Express live' });
-});
-
 
 /* GET p page. */
 router.get('/o', function (req, res, next) {
-    const pubFolder = 'C:/Users/Reiky/Desktop/node/Api/public/';
+    var pubFolder = __dirname + '/../public/';
     const fs = require('fs');
     fs.readdir(pubFolder, (err, files) => {
         files.sort(() => Math.random() - 0.5);
@@ -27,6 +21,33 @@ router.get('/o', function (req, res, next) {
         });
         html = "<!DOCTYPE html><html><head><title>P</title><link rel=\"stylesheet\" href=\"/stylesheets/style.css\"></head><body><p>" + links + "</p></body></html>";
         res.send(html);
+    });
+});
+
+/* Get dir page. */
+router.get('/:dir', function (req, res, next) {
+    var dir = req.params.dir;
+    console.log(dir);
+    var pubFolder = __dirname + '/../public/' + dir;
+    const fs = require('fs');
+    fs.readdir(pubFolder, (err, files) => {
+        let links = "";
+        try {
+            files.forEach(file => {
+                link = "<a href=\"/" + dir + "/" + file + "\" target=\"_blank\">" + file + "</a><br>";
+                links += link;
+            });
+            html = "<!DOCTYPE html><html>" +
+                "<head>" +
+                "<title>" + dir + "</title>" +
+                "<link rel=\"stylesheet\" href=\"/stylesheets/style.css\">" +
+                "</head>" +
+                "<body><p>" + links + "</p></body>" +
+                "</html>";
+            res.send(html);
+        } catch (e) {
+            res.send("Error");
+        }
     });
 });
 
